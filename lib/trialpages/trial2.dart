@@ -73,7 +73,7 @@ class _PamelaState extends State<Pamela> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Color.fromARGB(255, 23, 21, 178),
-        unselectedItemColor:Colors.black,
+        unselectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),
     );
@@ -170,7 +170,6 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildSingleStatCard('2300', 'Points Earned', Colors.orange),
-              // _buildSingleStatCard('32', 'Questions Done', Colors.orangeAccent),
             ],
           ),
         ),
@@ -180,15 +179,12 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildSingleStatCard(String value, String label, Color color) {
-    String imagePath = 'assets/star.gif'; // Default static image
+    String imagePath = 'assets/star.gif';
 
-    // Use different image paths based on the label or any other identifier
     if (label == 'Exp. Points') {
-      imagePath =
-          'assets/star.gif'; // Replace with your static image for Exp. Points
+      imagePath = 'assets/star.gif';
     } else if (label == 'Questions Done') {
-      imagePath =
-          'assets/soma1.png'; // Replace with your static image for Ranking
+      imagePath = 'assets/soma1.png';
     }
 
     return Row(
@@ -256,7 +252,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildDailyQuizCard() {
-    double quizProgress = 0.6; // Replace with actual progress value
+    double quizProgress = 0.6;
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -273,22 +269,21 @@ class HomeScreen extends StatelessWidget {
               Text(
                 'Daily Quiz',
                 style: GoogleFonts.poppins(
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
               Text(
                 'Predictable Questions',
                 style: GoogleFonts.poppins(
-                            textStyle: const TextStyle(
-                              fontSize: 14,
-                              
-                              color: Colors.white,
-                            ),
-                          ),
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
@@ -342,7 +337,7 @@ class HomeScreen extends StatelessWidget {
                     CircleAvatar(
                       backgroundColor: Colors.blue,
                       child: Text(
-                        subject[0], // Display the first letter of the subject
+                        subject[0],
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -364,7 +359,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 4), // Add some spacing
+                        const SizedBox(height: 4),
                         Text(
                           questions,
                           style: GoogleFonts.poppins(
@@ -379,8 +374,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Icon(Icons.arrow_forward_ios, color: Colors.brown),
+                const Icon(Icons.arrow_forward_ios, color: Colors.brown),
               ],
+            ),
+            const SizedBox(height: 8),
+            Image.asset(
+              'assets/Group 10.png',
+              width: 100,
+              height: 100,
             ),
           ],
         ),

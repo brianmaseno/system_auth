@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config.dart';
 import 'questions.dart';
@@ -74,7 +75,13 @@ class _TopicsPageState extends State<TopicsPage> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                 title: Text(
                   topicName,
-                  style: TextStyle(fontSize: 18),
+                  style: GoogleFonts.poppins(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown,
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -29,11 +29,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       
-      // home: SplashScreen(), // Set initial screen here
-      home: SplashScreen(),
+      home: LogIn(),
+       // Set initial screen here
+      // home: SplashScreen(),
     );
   }
 }

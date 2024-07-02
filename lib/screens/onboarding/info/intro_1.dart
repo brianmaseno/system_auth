@@ -21,15 +21,17 @@ class IntroPage1 extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 // Title
-                Text(
-                  'Welcome To Soma App',
-                  style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.brown[800],
+                Center(
+                  child: Text(
+                    'Hello Smartypants and welcome to Soma App',
+                    style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown[800],
+                    ),
                   ),
-                ),
+                  ),
                 ),
                 SizedBox(height: 20),
                 // Subtitle

@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:system_auth/config.dart';
+import 'package:system_auth/screens/home/profile/userprofile.dart';
+import 'package:system_auth/screens/home/topics.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -17,11 +19,42 @@ class _PamelaState extends State<Homepage> {
   int _selectedIndex = 0;
   late Future<List<Subject>> _subjectsFuture;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  String? _firstName;
 
   @override
   void initState() {
     super.initState();
     _subjectsFuture = _fetchSubjects();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final sessionCookie = await _storage.read(key: 'session_cookie');
+      if (sessionCookie == null) {
+        throw Exception('No session cookie found');
+      }
+
+      final response = await http.get(
+        Uri.parse('$BASE_URL/profile'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': sessionCookie,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final username = data['username'] as String;
+        setState(() {
+          _firstName = username.split(' ')[0]; // Get the first name from the username
+        });
+      } else {
+        print('Failed to load user data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
   }
 
   Future<List<Subject>> _fetchSubjects() async {
@@ -56,13 +89,6 @@ class _PamelaState extends State<Homepage> {
     });
   }
 
-  static const List<Widget> _pages = <Widget>[
-    Homepage(),
-    ProfileScreen(),
-    SettingsScreen(),
-    NotificationsScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,14 +96,14 @@ class _PamelaState extends State<Homepage> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          HomeScreen(subjectsFuture: _subjectsFuture),
-          const ProfileScreen(),
+          HomeScreen(subjectsFuture: _subjectsFuture, firstName: _firstName),
+          const ProfilePage(),
           const SettingsScreen(),
           const NotificationsScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF6200EE),
+        backgroundColor: const Color(0xFF6200EE),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -97,7 +123,7 @@ class _PamelaState extends State<Homepage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 23, 21, 178),
+        selectedItemColor: const Color.fromARGB(255, 23, 21, 178),
         unselectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),
@@ -107,8 +133,9 @@ class _PamelaState extends State<Homepage> {
 
 class HomeScreen extends StatelessWidget {
   final Future<List<Subject>> subjectsFuture;
+  final String? firstName;
 
-  const HomeScreen({Key? key, required this.subjectsFuture}) : super(key: key);
+  const HomeScreen({Key? key, required this.subjectsFuture, this.firstName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '👋 Hi Pamela,',
+                        '👋 Hi ${firstName ?? 'User'},',
                         style: GoogleFonts.poppins(
                           textStyle: const TextStyle(
                             fontSize: 24,
@@ -189,14 +216,13 @@ class HomeScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 76, 171, 225),
+            color: const Color.fromARGB(255, 76, 171, 225),
             borderRadius: BorderRadius.circular(12.0),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildSingleStatCard('0', 'Points Earned', Colors.orange),
-              // _buildSingleStatCard('32', 'Questions Done', Colors.orangeAccent),
             ],
           ),
         ),
@@ -210,11 +236,9 @@ class HomeScreen extends StatelessWidget {
 
     // Use different image paths based on the label or any other identifier
     if (label == 'Exp. Points') {
-      imagePath =
-          'assets/star.gif'; // Replace with your static image for Exp. Points
+      imagePath = 'assets/star.gif'; // Replace with your static image for Exp. Points
     } else if (label == 'Questions Done') {
-      imagePath =
-          'assets/soma1.png'; // Replace with your static image for Ranking
+      imagePath = 'assets/soma1.png'; // Replace with your static image for Ranking
     }
 
     return Row(
@@ -364,12 +388,37 @@ class HomeScreen extends StatelessWidget {
         final subject = subjects[index];
         return GestureDetector(
           onTap: () {
-            // Add your onTap logic here
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TopicsPage(
+                  subjectId: subject.id,
+                  subjectName: subject.name ?? 'No name',
+                ),
+              ),
+            );
           },
           child: Card(
             child: ListTile(
-              title: Text(subject.name ?? 'No name'),
-              subtitle: Text(subject.description ?? 'No description'),
+              title: Text(
+                subject.name ?? 'No name',
+                style: GoogleFonts.poppins(
+                  textStyle: const TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown,
+                  ),
+                ),
+              ),
+              subtitle: Text(
+                subject.description ?? '0 questions done',
+                style: GoogleFonts.poppins(
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.brown,
+                  ),
+                ),
+              ),
             ),
           ),
         );
@@ -378,16 +427,21 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+
 class Subject {
   final String? name;
   final String? description;
+  final int id;
+  final int grade;
 
-  Subject({this.name, this.description});
+  Subject({this.name, this.description, required this.id, required this.grade});
 
   factory Subject.fromJson(Map<String, dynamic> json) {
     return Subject(
       name: json['name'] as String?,
       description: json['description'] as String?,
+      id: json['id'],
+      grade: json['grade'],
     );
   }
 }

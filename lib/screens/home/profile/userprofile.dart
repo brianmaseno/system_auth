@@ -5,17 +5,18 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:system_auth/screens/home/home.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:system_auth/trialpages/apply.dart';
 
 import '../../../config.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _ProfilePageState extends State<ProfilePage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   String? _name;
@@ -90,7 +91,7 @@ class _UserProfileState extends State<UserProfile> {
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const UserProfile()),
+        MaterialPageRoute(builder: (context) => const ProfilePage()),
       );
     } else {
       setState(() {
@@ -163,7 +164,14 @@ class _UserProfileState extends State<UserProfile> {
             return Stack(
               children: [
                 AlertDialog(
-                  title: const Text('Update Your Details'),
+                  title: const Text(
+                    'Update Your Details',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -299,150 +307,218 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          color: Colors.white, // Change icon color to white
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) =>  HomePage()),
+              MaterialPageRoute(builder: (context) => const Homepage()),
             );
           },
         ),
-        title: const Text('User Profile'),
+        title: const Text(
+          'Your Profile',
+          style: TextStyle(
+            color: Colors.white, // Change text color to white
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0), // Adjust padding as needed
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_hasError)
-              Center(
-                child: Text(
-                  _errorMessage,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            const SizedBox(height: 16),
-            Center(
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.grey.shade200,
-                child: _profileImageUrl != null
-                    ? Text(
-                  _name?.substring(0, 2).toUpperCase() ?? '',
-                  style: const TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-                    : null,
-              ),
-            ),
-            const SizedBox(height: 30),
-            Center(
-              child: Text(
-                _name ?? 'Loading...',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    _grade != null ? 'Grade: $_grade' : 'Loading...',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey.shade700,
+            Stack(
+              children: [
+                Container(
+                  height: 300,
+                  decoration: const BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
                     ),
                   ),
-                  if (_updateErrorMessage.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        _updateErrorMessage,
-                        style: const TextStyle(color: Colors.red),
+                ),
+                Column(
+                  children: [
+                    const SizedBox(height: 60),
+                    Center(
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Colors.grey.shade200,
+                        child: _profileImageUrl != null
+                            ? Text(
+                          _name?.substring(0, 2).toUpperCase() ?? '',
+                          style: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                            : null,
                       ),
                     ),
-                ],
-              ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Text(
+                        _name ?? 'Loading...',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            _grade != null ? 'Grade: $_grade' : 'Loading...',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: const Color.fromARGB(255, 240, 239, 239),
+                            ),
+                          ),
+                          if (_updateErrorMessage.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                _updateErrorMessage,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 2),
+            //const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.person_outline),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _name ?? 'Lewis Momanyi',
+                      style: const TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Tooltip(
+                  message: 'Edit profile', // Tooltip message to display
+                  child: IconButton(
+                    icon: const Icon(Icons.edit_note_rounded),
+                    onPressed: _showUpdateDialog,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.school_outlined),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _grade != null ? 'Grade: $_grade' : 'Grade X',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // const Spacer(),
+                Tooltip(
+                  message: 'Edit Profile', // Tooltip message to display
+                  child: IconButton(
+                    icon: Icon(Icons.edit_note_rounded),
+                    onPressed: _showUpdateDialog,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 16), 
+            // Reduced the SizedBox height here
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _showUpdateDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _logOut,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[400],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
-                    'Update Details',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.logout, // Icon for logout
+                      color: Colors.white, // Color of the icon
                     ),
-                  ),
+                    SizedBox(width: 8), // SizedBox for spacing between icon and text
+                    Text(
+                      'Log Out',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16, // Adjust font size as needed
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _logOut,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Log Out',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+            const SizedBox(height: 8), // Reduced the SizedBox height here
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _showDeleteConfirmationDialog,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[400],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _showDeleteConfirmationDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.delete, // Icon for delete
+                      color: Colors.white, // Color of the icon
                     ),
-                  ),
-                  child: const Text(
-                    'Delete Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(width: 8), // SizedBox for spacing between icon and text
+                    Text(
+                      'Delete Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16, // Adjust font size as needed
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),

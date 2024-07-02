@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class Question extends StatefulWidget {
   const Question({super.key});
@@ -13,17 +14,27 @@ class _QuestState extends State<Question> {
   String? _selectedOption;
   String correctAnswer = '20 years';
   late ConfettiController _confettiController;
+  late FlutterTts _flutterTts;
 
   @override
   void initState() {
     super.initState();
     _confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    _flutterTts = FlutterTts();
+    _speak("If David’s age is 27 years old in 2011. What was his age in 2003?");
   }
 
   @override
   void dispose() {
     _confettiController.dispose();
+    _flutterTts.stop();
     super.dispose();
+  }
+
+  Future<void> _speak(String text) async {
+    await _flutterTts.setLanguage("en-US");
+    await _flutterTts.setPitch(1.0); // Adjust pitch to a normal level
+    await _flutterTts.speak(text);
   }
 
   void _onOptionSelected(String option) {
@@ -31,6 +42,9 @@ class _QuestState extends State<Question> {
       _selectedOption = option;
       if (option == correctAnswer) {
         _confettiController.play();
+        _speak("Correct");
+      } else {
+        _speak("Wrong");
       }
     });
   }
@@ -106,7 +120,7 @@ class _QuestState extends State<Question> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Color.fromARGB(255, 15, 160, 27),
                             ),
-                            borderRadius: BorderRadius.circular(5.0), // Add this line to make the LinearProgressIndicator rounded
+                            borderRadius: BorderRadius.circular(5.0),
                           ),
                         ),
                       ),
@@ -151,20 +165,22 @@ class _QuestState extends State<Question> {
                   ),
                   SizedBox(height: 20),
                   if (_selectedOption != null)
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle the next button action
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                      ),
-                      child: Text(
-                        'Next',
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Handle the next button action
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                        ),
+                        child: Text(
+                          'Next',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

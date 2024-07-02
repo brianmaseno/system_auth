@@ -1,1 +1,1 @@
-final String BASE_URL='https://challenging-statement-abroad-features.trycloudflare.com';
+final String BASE_URL='https://cow-mechanism-sacred-undertaken.trycloudflare.com';

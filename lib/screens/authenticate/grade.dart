@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:system_auth/screens/home/home.dart';
+import 'package:system_auth/trialpages/apply.dart';
 import '../../config.dart';
 
 void main() {
@@ -59,7 +60,7 @@ class _GradePageState extends State<GradePage> {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const Homepage()),
         );
       } else {
         // Handle other status codes
